@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
 
-np.random.seed(2017)
+np.random.seed(1)
 
 
 def generate_data_points():
@@ -45,9 +45,9 @@ def display(points, labels):
     cluster2 = points[labels == 2, :]
 
     # Plot each cluster
-    plt.plot(cluster0[:, 0], cluster0[:, 1], '.')
-    plt.plot(cluster1[:, 0], cluster1[:, 1], '.')
-    plt.plot(cluster2[:, 0], cluster2[:, 1], '.')
+    plt.plot(cluster0[:, 0], cluster0[:, 1], 'r.', markersize=4, alpha=.8)
+    plt.plot(cluster1[:, 0], cluster1[:, 1], 'g^', markersize=4, alpha=.8)
+    plt.plot(cluster2[:, 0], cluster2[:, 1], 'bs', markersize=4, alpha=.8)
 
     plt.axis('equal')
     plt.plot()
@@ -55,7 +55,7 @@ def display(points, labels):
 
 
 def init_centers(points, num_clusters):
-    # randomly pick k rows of points as initial centers
+    # randomly pick num_clusters rows of points as initial centers
     return points[np.random.choice(points.shape[0],
                                    num_clusters, replace=False)]
 
@@ -77,23 +77,25 @@ def update_centers(points, labels, num_clusters):
 
 
 def has_converged(centers, new_centers):
+    """ Check if two centers are identical """
     return (set([tuple(a) for a in centers]) ==
             set([tuple(a) for a in new_centers]))
 
 
 def kmeans(points, num_clusters):
+    """ K-Means algorithm """
     centers = init_centers(points, num_clusters)
     labels = []
     it = 0
-    converged = False
+    is_converged = False
 
-    while not converged:
+    while not is_converged:
         new_labels = assign_labels(points, centers)
         labels = new_labels[:]
         new_centers = update_centers(points, labels, num_clusters)
 
         if has_converged(centers, new_centers):
-            converged = True
+            is_converged = True
         else:
             centers = new_centers[:]
             it += 1
